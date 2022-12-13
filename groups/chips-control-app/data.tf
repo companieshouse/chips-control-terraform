@@ -14,11 +14,6 @@ data "aws_subnet_ids" "application" {
   }
 }
 
-data "aws_subnet" "application" {
-  for_each = data.aws_subnet_ids.application.ids
-  id       = each.value
-}
-
 data "aws_route53_zone" "private_zone" {
   name         = local.internal_fqdn
   private_zone = true
