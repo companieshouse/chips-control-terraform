@@ -19,6 +19,11 @@ data "aws_route53_zone" "private_zone" {
   private_zone = true
 }
 
+data "aws_acm_certificate" "acm_cert" {
+  domain = var.domain_name
+  most_recent = true
+}
+
 data "vault_generic_secret" "account_ids" {
   path = "aws-accounts/account-ids"
 }

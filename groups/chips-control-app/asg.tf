@@ -12,6 +12,16 @@ module "asg_security_group" {
   ingress_cidr_blocks = local.admin_cidrs
   ingress_rules       = ["ssh-tcp"]
 
+  ingress_with_source_security_group_id = [
+    {
+      from_port                = var.application_port
+      to_port                  = var.application_port
+      protocol                 = "tcp"
+      description              = "${var.application} port"
+      source_security_group_id = module.internal_alb_security_group.security_group_id
+    }
+  ]
+
   egress_rules = ["all-all"]
 }
 
@@ -53,6 +63,10 @@ module "asg" {
   refresh_triggers               = ["launch_configuration"]
   key_name                       = aws_key_pair.keypair.key_name
   termination_policies           = ["OldestLaunchConfiguration"]
+
+  target_group_arns = [
+    module.internal_alb.target_group_arns[0]
+  ]
   
   iam_instance_profile = module.instance_profile.aws_iam_instance_profile.name
   user_data_base64     = data.template_cloudinit_config.userdata_config.rendered

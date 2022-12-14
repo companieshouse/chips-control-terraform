@@ -64,7 +64,7 @@ variable "application_type" {
 }
 
 # ------------------------------------------------------------------------------
-# CHIPS ASG Variables
+# ASG Variables
 # ------------------------------------------------------------------------------
 
 variable "instance_size" {
@@ -141,4 +141,26 @@ variable "enable_sns_topic" {
   type        = bool
   description = "A boolean value to indicate whether to deploy SNS topic configuration for CloudWatch actions"
   default     = false
+}
+
+# ------------------------------------------------------------------------------
+# ALB Variables
+# ------------------------------------------------------------------------------
+
+variable "application_port" {
+  type        = number
+  default     = 4440
+  description = "Target group backend port for application"
+}
+
+variable "application_health_check_path" {
+  type        = string
+  default     = "/"
+  description = "Target group health check path for application"
+}
+
+variable "domain_name" {
+  type        = string
+  default     = "*.companieshouse.gov.uk"
+  description = "Domain Name for ACM Certificate"
 }
