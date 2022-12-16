@@ -1,7 +1,7 @@
 # Account details
 aws_profile = "heritage-live-eu-west-2"
 aws_region  = "eu-west-2"
-aws_account = "live-development"
+aws_account = "heritage-live"
 
 # Account shorthand
 account     = "hlive"
