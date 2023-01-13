@@ -73,6 +73,28 @@ module "instance_profile" {
       actions = [
         "cloudwatch:PutMetricData"
       ]
+    },
+    {
+      sid       = "AllowDescribeALBs",
+      effect    = "Allow",
+      resources = ["*"],
+      actions = [
+        "elasticloadbalancing:DescribeLoadBalancers",
+        "elasticloadbalancing:DescribeListeners",
+        "elasticloadbalancing:DescribeRules"
+      ]
+    },
+    {
+      sid       = "AllowCHIPSALBCreateAndDeleteRule",
+      effect    = "Allow",
+      resources = [
+        "arn:aws:elasticloadbalancing:${var.aws_region}:${data.aws_caller_identity.current.account_id}:listener/app/alb-chips*",
+        "arn:aws:elasticloadbalancing:${var.aws_region}:${data.aws_caller_identity.current.account_id}:listener-rule/app/alb-chips*"
+      ],
+      actions = [
+        "elasticloadbalancing:CreateRule",
+        "elasticloadbalancing:DeleteRule"
+      ]
     }
   ]
 }
