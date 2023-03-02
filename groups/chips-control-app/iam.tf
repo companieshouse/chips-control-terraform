@@ -105,6 +105,17 @@ module "instance_profile" {
       actions = [
         "sns:Publish"
       ]
+    },
+    {
+      sid       = "AllowKMSOperationsForSNS",
+      effect    = "Allow",
+      resources = [
+        data.aws_kms_key.sns_key.arn
+      ],
+      actions = [
+        "kms:Decrypt",
+        "kms:GenerateDataKey*"
+      ]
     }
   ]
 }
