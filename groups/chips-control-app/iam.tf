@@ -95,6 +95,16 @@ module "instance_profile" {
         "elasticloadbalancing:CreateRule",
         "elasticloadbalancing:DeleteRule"
       ]
+    },
+    {
+      sid       = "AllowCHIPSSNSPublish",
+      effect    = "Allow",
+      resources = [
+        "arn:aws:sns:${var.aws_region}:${data.aws_caller_identity.current.account_id}:chips*"
+      ],
+      actions = [
+        "sns:Publish"
+      ]
     }
   ]
 }
