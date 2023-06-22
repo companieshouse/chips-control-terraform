@@ -16,6 +16,9 @@ asg_count = 1
 instance_size = "t3.large"
 enable_instance_refresh = true
 
+# Custom config bucket for development
+config_bucket_name = "heritage-development.eu-west-2.configs.ch.gov.uk"
+
 # NFS Mounts
 nfs_mount_destination_parent_dir = "/mnt/nfs"
 
