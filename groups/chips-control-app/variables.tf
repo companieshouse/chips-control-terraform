@@ -164,3 +164,9 @@ variable "domain_name" {
   default     = "*.companieshouse.gov.uk"
   description = "Domain Name for ACM Certificate"
 }
+
+variable "allow_concourse_access" {
+  type        = bool
+  default     = false
+  description = "Whether to allow concourse worker subnets access to the ALB"
+}

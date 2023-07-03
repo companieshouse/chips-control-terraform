@@ -22,6 +22,10 @@ data "aws_ec2_managed_prefix_list" "shared-services-management" {
   name = "shared-services-management-cidrs"
 }
 
+data "vault_generic_secret" "ch_development_concourse_cidrs" {
+  path = "/aws-accounts/network/ch-development-private-management-cidrs"
+}
+
 data "aws_route53_zone" "private_zone" {
   name         = local.internal_fqdn
   private_zone = true

@@ -6,12 +6,24 @@ module "internal_alb_security_group" {
   description = "Security group for the ${var.application} servers"
   vpc_id      = data.aws_vpc.vpc.id
 
-  ingress_prefix_list_ids  = [
+  ingress_prefix_list_ids  = var.allow_concourse_access ? [
     data.aws_ec2_managed_prefix_list.administration.id,
     data.aws_ec2_managed_prefix_list.shared-services-management.id
-  ]
+  ] : [data.aws_ec2_managed_prefix_list.administration.id]
+  
   ingress_rules       = ["http-80-tcp", "https-443-tcp"]
   egress_rules        = ["all-all"]
+}
+
+resource "aws_security_group_rule" "ch-development-concourse" {
+  count             = var.allow_concourse_access ? 1 : 0
+  description       = "HTTPS from Concourse workers on ch-development"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  type              = "ingress"
+  cidr_blocks       = local.ch_development_concourse_cidrs
+  security_group_id = module.internal_alb_security_group.security_group_id
 }
 
 module "internal_alb" {
