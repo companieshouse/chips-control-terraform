@@ -6,7 +6,10 @@ module "internal_alb_security_group" {
   description = "Security group for the ${var.application} servers"
   vpc_id      = data.aws_vpc.vpc.id
 
-  ingress_cidr_blocks = local.admin_cidrs
+  ingress_prefix_list_ids  = [
+    data.aws_ec2_managed_prefix_list.administration.id,
+    data.aws_ec2_managed_prefix_list.shared-services-management.id
+  ]
   ingress_rules       = ["http-80-tcp", "https-443-tcp"]
   egress_rules        = ["all-all"]
 }

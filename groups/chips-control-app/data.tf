@@ -14,6 +14,14 @@ data "aws_subnet_ids" "application" {
   }
 }
 
+data "aws_ec2_managed_prefix_list" "administration" {
+  name = "administration-cidr-ranges"
+}
+
+data "aws_ec2_managed_prefix_list" "shared-services-management" {
+  name = "shared-services-management-cidrs"
+}
+
 data "aws_route53_zone" "private_zone" {
   name         = local.internal_fqdn
   private_zone = true
@@ -30,10 +38,6 @@ data "aws_kms_key" "sns_key" {
 
 data "vault_generic_secret" "account_ids" {
   path = "aws-accounts/account-ids"
-}
-
-data "vault_generic_secret" "internal_cidrs" {
-  path = "aws-accounts/network/internal_cidr_ranges"
 }
 
 data "vault_generic_secret" "ec2_data" {
