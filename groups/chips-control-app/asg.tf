@@ -9,20 +9,20 @@ module "asg_security_group" {
   description = "Security group for the ${var.application} asg"
   vpc_id      = data.aws_vpc.vpc.id
 
-  ingress_cidr_blocks = local.admin_cidrs
+  ingress_prefix_list_ids  = [data.aws_ec2_managed_prefix_list.administration.id]
   ingress_rules       = ["ssh-tcp"]
 
-  ingress_with_source_security_group_id = [
-    {
-      from_port                = var.application_port
-      to_port                  = var.application_port
-      protocol                 = "tcp"
-      description              = "${var.application} port"
-      source_security_group_id = module.internal_alb_security_group.security_group_id
-    }
-  ]
-
   egress_rules = ["all-all"]
+}
+
+resource "aws_security_group_rule" "http_from_alb" {
+  description              = "HTTP from ALB"
+  from_port                = var.application_port
+  to_port                  = var.application_port
+  protocol                 = "tcp"
+  type                     = "ingress"
+  source_security_group_id = module.internal_alb_security_group.security_group_id
+  security_group_id        = module.asg_security_group.security_group_id
 }
 
 # ASG Module
