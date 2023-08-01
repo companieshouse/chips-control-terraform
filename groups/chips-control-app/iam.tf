@@ -29,6 +29,7 @@ module "instance_profile" {
       actions = [
         "s3:Get*",
         "s3:List*",
+        "s3:PutObject"
       ]
     },
     {
