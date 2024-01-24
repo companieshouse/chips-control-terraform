@@ -27,14 +27,14 @@ resource "aws_security_group_rule" "http_from_alb" {
 
 # ASG Module
 module "asg" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/terraform-aws-autoscaling?ref=tags/1.0.36"
+  source = "git@github.com:companieshouse/terraform-modules//aws/autoscaling-with-launch-template?ref=tags/1.0.242"
 
   count = var.asg_count
 
   name = format("%s%s", var.application, count.index)
 
-  # Launch configuration
-  lc_name       = format("%s%s-launchconfig", var.application, count.index)
+  # Launch template
+  lt_name       = format("%s%s-launchtemplate", var.application, count.index)
   image_id      = data.aws_ami.ami.id
   instance_type = var.instance_size
   security_groups = [
@@ -43,11 +43,18 @@ module "asg" {
   root_block_device = [
     {
       volume_size = var.instance_root_volume_size
-      volume_type = "gp2"
       encrypted   = true
-      iops        = 0
-    },
+    }
   ]
+
+  block_device_mappings = [
+    {
+      device_name = "/dev/xvdb"
+      encrypted   = true
+      volume_size = var.instance_swap_volume_size
+    }
+  ]
+  
   # Auto scaling group
   asg_name                       = format("%s%s-asg", var.application, count.index)
   vpc_zone_identifier            = data.aws_subnet_ids.application.ids
@@ -63,6 +70,7 @@ module "asg" {
   refresh_triggers               = ["launch_configuration"]
   key_name                       = aws_key_pair.keypair.key_name
   termination_policies           = ["OldestLaunchConfiguration"]
+  enforce_imdsv2                 = var.enforce_imdsv2
 
   target_group_arns = [
     module.internal_alb.target_group_arns[0]
