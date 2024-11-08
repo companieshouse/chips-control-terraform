@@ -8,7 +8,8 @@ module "instance_profile" {
 
   kms_key_refs = [
     "alias/${var.account}/${var.region}/ebs",
-    local.ssm_kms_key_id
+    local.ssm_kms_key_id,
+    local.account_ssm_key_arn
   ]
 
   cw_log_group_arns = length(local.log_groups) > 0 ? [format(
@@ -60,11 +61,12 @@ module "instance_profile" {
       ]
     },
     {
-      sid       = "AllowReadOfParameterStore",
+      sid       = "AllowReadWriteOfParameterStore",
       effect    = "Allow",
       resources = ["arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/chips/*"],
       actions = [
-        "ssm:GetParameter*"
+        "ssm:GetParameter*",
+        "ssm:PutParameter"
       ]
     },
     {
