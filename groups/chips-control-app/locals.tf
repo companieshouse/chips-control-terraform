@@ -16,6 +16,9 @@ locals {
   elb_access_logs_bucket_name = local.security_s3_data["elb-access-logs-bucket-name"]
   elb_access_logs_prefix      = "elb-access-logs"
 
+  https_access_source_sg_ids = flatten([for sg in data.aws_security_groups.https_access_group_ids : sg.ids])
+  https_access_source_groups = {for group in data.aws_security_group.https_access_groups : group.tags.Name => group.id}
+
   nfs_mounts = jsondecode(data.vault_generic_secret.nfs_mounts.data["${var.application}-mounts"])
 
   #For each log map passed, add an extra kv for the log group name and append the NFS directory into the filepath where required

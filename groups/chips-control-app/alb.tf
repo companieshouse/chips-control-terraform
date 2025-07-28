@@ -15,7 +15,7 @@ module "internal_alb_security_group" {
   egress_rules        = ["all-all"]
 }
 
-resource "aws_security_group_rule" "ch-development-concourse" {
+resource "aws_security_group_rule" "ch_development_concourse" {
   count             = var.allow_concourse_access ? 1 : 0
   description       = "HTTPS from Concourse workers on ch-development"
   from_port         = 443
@@ -24,6 +24,18 @@ resource "aws_security_group_rule" "ch-development-concourse" {
   type              = "ingress"
   cidr_blocks       = local.ch_development_concourse_cidrs
   security_group_id = module.internal_alb_security_group.security_group_id
+}
+
+resource "aws_security_group_rule" "heritage_development_https" {
+  for_each = tomap(local.https_access_source_groups)
+
+  description              = "Access to HTTPS from ${each.key}"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  type                     = "ingress"
+  source_security_group_id = each.value
+  security_group_id        = module.internal_alb_security_group.security_group_id
 }
 
 module "internal_alb" {
