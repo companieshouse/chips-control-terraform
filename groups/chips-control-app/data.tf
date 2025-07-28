@@ -14,6 +14,19 @@ data "aws_subnet_ids" "application" {
   }
 }
 
+data "aws_security_groups" "https_access_group_ids" {
+  for_each = toset(var.https_access_sg_patterns)
+  filter {
+    name   = "group-name"
+    values = [each.key]
+  }
+}
+
+data "aws_security_group" "https_access_groups" {
+  for_each = toset(local.https_access_source_sg_ids)
+  id       = each.key
+}
+
 data "aws_ec2_managed_prefix_list" "administration" {
   name = "administration-cidr-ranges"
 }

@@ -22,6 +22,10 @@ config_bucket_name = "heritage-development.eu-west-2.configs.ch.gov.uk"
 # Allow access from Concourse workers
 allow_concourse_access = true
 
+https_access_sg_patterns = [
+  "sgr-chips-*-asg-001-*"
+]
+
 # NFS Mounts
 nfs_mount_destination_parent_dir = "/mnt/nfs"
 

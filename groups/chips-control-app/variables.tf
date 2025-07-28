@@ -182,3 +182,9 @@ variable "allow_concourse_access" {
   default     = false
   description = "Whether to allow concourse worker subnets access to the ALB"
 }
+
+variable "https_access_sg_patterns" {
+  type        = list(string)
+  default     = []
+  description = "List of source security group name patterns that will have access to the ALB HTTPS port"
+}
