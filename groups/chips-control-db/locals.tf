@@ -1,6 +1,4 @@
 locals {
-  admin_cidrs    = values(data.vault_generic_secret.internal_cidrs.data)
-
   rds_data = {
     rundeck   = data.vault_generic_secret.rundeck_rds.data
   }
