@@ -50,7 +50,7 @@ module "internal_alb" {
   idle_timeout               = 120
 
   security_groups = [module.internal_alb_security_group.security_group_id]
-  subnets         = data.aws_subnet_ids.application.ids
+  subnets         = data.aws_subnets.application.ids
 
   access_logs = {
     bucket  = local.elb_access_logs_bucket_name

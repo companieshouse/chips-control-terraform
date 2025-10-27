@@ -27,7 +27,7 @@ resource "aws_security_group_rule" "http_from_alb" {
 
 # ASG Module
 module "asg" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/autoscaling-with-launch-template?ref=tags/1.0.244"
+  source = "git@github.com:companieshouse/terraform-modules//aws/autoscaling-with-launch-template?ref=tags/1.0.356"
 
   count = var.asg_count
 
@@ -57,7 +57,7 @@ module "asg" {
   
   # Auto scaling group
   asg_name                       = format("%s%s-asg", var.application, count.index)
-  vpc_zone_identifier            = data.aws_subnet_ids.application.ids
+  vpc_zone_identifier            = data.aws_subnets.application.ids
   health_check_type              = "EC2"
   min_size                       = var.asg_min_size
   max_size                       = var.asg_max_size
@@ -100,7 +100,7 @@ resource "aws_cloudwatch_log_group" "log_groups" {
 # ASG CloudWatch Alarms
 #--------------------------------------------
 module "asg_alarms" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/asg-cloudwatch-alarms?ref=tags/1.0.116"
+  source = "git@github.com:companieshouse/terraform-modules//aws/asg-cloudwatch-alarms?ref=tags/1.0.356"
 
   count = var.asg_count
 

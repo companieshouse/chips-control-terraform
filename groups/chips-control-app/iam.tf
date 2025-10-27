@@ -1,13 +1,13 @@
 module "instance_profile" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/instance_profile?ref=tags/1.0.59"
+  source = "git@github.com:companieshouse/terraform-modules//aws/instance_profile?ref=tags/1.0.356"
 
   name       = format("%s-profile", var.application)
-  enable_SSM = true
+  enable_ssm = true
 
   s3_buckets_write = [local.session_manager_bucket_name]
 
   kms_key_refs = [
-    "alias/${var.account}/${var.region}/ebs",
+    "alias/${var.account}/${var.shregion}/ebs",
     local.ssm_kms_key_id,
     local.account_ssm_key_arn
   ]
