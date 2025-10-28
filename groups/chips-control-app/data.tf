@@ -6,16 +6,6 @@ data "aws_vpc" "vpc" {
   }
 }
 
-# data "aws_subnets" "application" {
-#   filter {
-#     name   = "vpc-id"
-#     values = [data.aws_vpc.vpc.id]
-#   }
-#   filter {
-#     name   = "tag:Name"
-#     values = ["sub-application-*"]
-#   }
-# }
 data "aws_subnets" "application" {
 
   filter {
@@ -24,8 +14,8 @@ data "aws_subnets" "application" {
   }
 
   filter {
-    name   = "tag:Application"
-    values = [var.application]
+    name   = "tag:Name"
+    values = ["sub-application-*"]
   }
 }
 
