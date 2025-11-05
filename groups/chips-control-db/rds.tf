@@ -141,11 +141,7 @@ module "rds_start_stop_schedule" {
 
   rds_schedule_enable = lookup(each.value, "rds_schedule_enable", false)
 
-  rds_instance_id     = try(
-    module.rds[each.key].this_db_instance_id,
-    module.rds[each.key].db_instance_id,
-    module.rds[each.key].id
-  )
+  rds_instance_id     = module.rds[each.key].db_instance_identifier
   rds_start_schedule  = lookup(each.value, "rds_start_schedule")
   rds_stop_schedule   = lookup(each.value, "rds_stop_schedule")
 }
@@ -156,11 +152,11 @@ module "rds_cloudwatch_alarms" {
   for_each = var.rds_cloudwatch_alarms
 
 
-  db_instance_id         = try(
-    module.rds[each.key].this_db_instance_id,
-    module.rds[each.key].db_instance_id,
-    module.rds[each.key].id
-  )
+  db_instance_id         = module.rds[each.key].db_instance_identifier
+  #   module.rds[each.key].this_db_instance_id,
+  #   module.rds[each.key].db_instance_id,
+  #   module.rds[each.key].id
+  # )
   db_instance_shortname  = upper(each.key)
   alarm_actions_enabled  = lookup(each.value, "alarm_actions_enabled")
   alarm_name_prefix      = "Oracle RDS"
