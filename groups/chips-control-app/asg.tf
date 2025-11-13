@@ -9,8 +9,8 @@ module "asg_security_group" {
   description = "Security group for the ${var.application} asg"
   vpc_id      = data.aws_vpc.vpc.id
 
-  ingress_prefix_list_ids  = [data.aws_ec2_managed_prefix_list.administration.id]
-  ingress_rules       = ["ssh-tcp"]
+  ingress_prefix_list_ids = [data.aws_ec2_managed_prefix_list.administration.id]
+  ingress_rules           = ["ssh-tcp"]
 
   egress_rules = ["all-all"]
 }
@@ -54,7 +54,7 @@ module "asg" {
       volume_size = var.instance_swap_volume_size
     }
   ]
-  
+
   # Auto scaling group
   asg_name                       = format("%s%s-asg", var.application, count.index)
   vpc_zone_identifier            = data.aws_subnets.application.ids
@@ -75,7 +75,7 @@ module "asg" {
   target_group_arns = [
     module.internal_alb.target_group_arns[0]
   ]
-  
+
   iam_instance_profile = module.instance_profile.aws_iam_instance_profile.name
   user_data_base64     = data.template_cloudinit_config.userdata_config.rendered
 

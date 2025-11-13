@@ -88,8 +88,8 @@ module "instance_profile" {
       ]
     },
     {
-      sid       = "AllowCHIPSALBCreateAndDeleteRule",
-      effect    = "Allow",
+      sid    = "AllowCHIPSALBCreateAndDeleteRule",
+      effect = "Allow",
       resources = [
         "arn:aws:elasticloadbalancing:${var.aws_region}:${data.aws_caller_identity.current.account_id}:listener/app/alb-chips*",
         "arn:aws:elasticloadbalancing:${var.aws_region}:${data.aws_caller_identity.current.account_id}:listener-rule/app/alb-chips*"
@@ -100,8 +100,8 @@ module "instance_profile" {
       ]
     },
     {
-      sid       = "AllowCHIPSSNSPublish",
-      effect    = "Allow",
+      sid    = "AllowCHIPSSNSPublish",
+      effect = "Allow",
       resources = [
         "arn:aws:sns:${var.aws_region}:${data.aws_caller_identity.current.account_id}:chips*"
       ],
@@ -110,8 +110,8 @@ module "instance_profile" {
       ]
     },
     {
-      sid       = "AllowKMSOperationsForSNS",
-      effect    = "Allow",
+      sid    = "AllowKMSOperationsForSNS",
+      effect = "Allow",
       resources = [
         data.aws_kms_key.sns_key.arn
       ],

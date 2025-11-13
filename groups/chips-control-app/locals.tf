@@ -17,7 +17,7 @@ locals {
   elb_access_logs_prefix      = "elb-access-logs"
 
   https_access_source_sg_ids = flatten([for sg in data.aws_security_groups.https_access_group_ids : sg.ids])
-  https_access_source_groups = {for group in data.aws_security_group.https_access_groups : group.tags.Name => group.id}
+  https_access_source_groups = { for group in data.aws_security_group.https_access_groups : group.tags.Name => group.id }
 
   nfs_mounts = jsondecode(data.vault_generic_secret.nfs_mounts.data["${var.application}-mounts"])
 
@@ -45,10 +45,10 @@ locals {
   }
 
   userdata_ansible_inputs = {
-    mounts_parent_dir          = var.nfs_mount_destination_parent_dir
-    mounts                     = local.nfs_mounts
-    install_watcher_service    = false
-    cw_log_files               = local.cloudwatch_logs
-    cw_agent_user              = "root"
+    mounts_parent_dir       = var.nfs_mount_destination_parent_dir
+    mounts                  = local.nfs_mounts
+    install_watcher_service = false
+    cw_log_files            = local.cloudwatch_logs
+    cw_agent_user           = "root"
   }
 }

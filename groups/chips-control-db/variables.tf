@@ -60,7 +60,7 @@ variable "environment" {
 # RDS Variables
 # ------------------------------------------------------------------------------
 variable "rds_databases" {
-  type = map
+  type = map(any)
 }
 
 variable "rds_ingress_groups" {

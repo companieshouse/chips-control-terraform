@@ -16,7 +16,7 @@ module "rds_security_group" {
   egress_rules = ["all-all"]
 }
 resource "aws_security_group_rule" "admin_oracle_db" {
-  for_each          = var.rds_databases
+  for_each = var.rds_databases
 
   description       = "Allow Oracle DB listener from admin prefix list"
   type              = "ingress"
@@ -28,7 +28,7 @@ resource "aws_security_group_rule" "admin_oracle_db" {
 }
 
 resource "aws_security_group_rule" "admin_oracle_em" {
-  for_each          = var.rds_databases
+  for_each = var.rds_databases
 
   description       = "Allow Oracle Enterprise Manager from admin prefix list"
   type              = "ingress"
@@ -47,8 +47,8 @@ module "rds" {
   source  = "terraform-aws-modules/rds/aws"
   version = "6.13.1"
 
-  create_db_parameter_group  = true
-  create_db_subnet_group     = true
+  create_db_parameter_group = true
+  create_db_subnet_group    = true
 
   character_set_name         = lookup(each.value, "character_set_name", "AL32UTF8")
   identifier                 = join("-", ["rds", each.key, var.environment, "001"])
@@ -65,16 +65,16 @@ module "rds" {
   storage_encrypted          = true
   kms_key_id                 = data.aws_kms_key.rds.arn
 
-  db_name                    = upper(each.key)
-  username                   = local.rds_data[each.key]["admin-username"]
-  password                   = local.rds_data[each.key]["admin-password"]
-  port                       = 1521
+  db_name  = upper(each.key)
+  username = local.rds_data[each.key]["admin-username"]
+  password = local.rds_data[each.key]["admin-password"]
+  port     = 1521
 
-  deletion_protection        = true
-  maintenance_window         = lookup(each.value, "rds_maintenance_window", "Mon:00:00-Mon:03:00")
-  backup_window              = lookup(each.value, "rds_backup_window", "03:00-06:00")
-  backup_retention_period    = lookup(each.value, "backup_retention_period", 7)
-  skip_final_snapshot        = false
+  deletion_protection     = true
+  maintenance_window      = lookup(each.value, "rds_maintenance_window", "Mon:00:00-Mon:03:00")
+  backup_window           = lookup(each.value, "rds_backup_window", "03:00-06:00")
+  backup_retention_period = lookup(each.value, "backup_retention_period", 7)
+  skip_final_snapshot     = false
 
   # Enhanced Monitoring
   monitoring_interval             = 30
@@ -141,9 +141,9 @@ module "rds_start_stop_schedule" {
 
   rds_schedule_enable = lookup(each.value, "rds_schedule_enable", false)
 
-  rds_instance_id     = module.rds[each.key].db_instance_identifier
-  rds_start_schedule  = lookup(each.value, "rds_start_schedule")
-  rds_stop_schedule   = lookup(each.value, "rds_stop_schedule")
+  rds_instance_id    = module.rds[each.key].db_instance_identifier
+  rds_start_schedule = lookup(each.value, "rds_start_schedule")
+  rds_stop_schedule  = lookup(each.value, "rds_stop_schedule")
 }
 
 module "rds_cloudwatch_alarms" {
@@ -152,14 +152,14 @@ module "rds_cloudwatch_alarms" {
   for_each = var.rds_cloudwatch_alarms
 
 
-  db_instance_id         = module.rds[each.key].db_instance_identifier
+  db_instance_id = module.rds[each.key].db_instance_identifier
   #   module.rds[each.key].this_db_instance_id,
   #   module.rds[each.key].db_instance_id,
   #   module.rds[each.key].id
   # )
-  db_instance_shortname  = upper(each.key)
-  alarm_actions_enabled  = lookup(each.value, "alarm_actions_enabled")
-  alarm_name_prefix      = "Oracle RDS"
-  alarm_topic_name       = lookup(each.value, "alarm_topic_name")
-  alarm_topic_name_ooh   = lookup(each.value, "alarm_topic_name_ooh")
+  db_instance_shortname = upper(each.key)
+  alarm_actions_enabled = lookup(each.value, "alarm_actions_enabled")
+  alarm_name_prefix     = "Oracle RDS"
+  alarm_topic_name      = lookup(each.value, "alarm_topic_name")
+  alarm_topic_name_ooh  = lookup(each.value, "alarm_topic_name_ooh")
 }

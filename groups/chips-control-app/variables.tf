@@ -47,7 +47,7 @@ variable "shregion" {
   type        = string
   description = "Shorthand version of the AWS region in which resources will be administered"
 }
-  
+
 # ------------------------------------------------------------------------------
 # Environment Variables
 # ------------------------------------------------------------------------------
