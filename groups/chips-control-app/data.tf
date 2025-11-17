@@ -55,7 +55,7 @@ data "aws_acm_certificate" "acm_cert" {
 }
 
 data "aws_kms_key" "sns_key" {
-  key_id = "alias/${var.account}/${var.shregion}/sns"
+  key_id = "alias/${var.account}/${var.region}/sns"
 }
 
 data "vault_generic_secret" "account_ids" {

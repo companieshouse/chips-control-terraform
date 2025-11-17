@@ -9,7 +9,7 @@ account     = "hdev"
 environment = "development"
 
 # Region shorthand for KMS
-shregion = "euw2"
+region = "euw2"
 
 # RDS settings
 rds_databases = {
