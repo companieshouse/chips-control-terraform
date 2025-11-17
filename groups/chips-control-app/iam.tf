@@ -7,7 +7,7 @@ module "instance_profile" {
   s3_buckets_write = [local.session_manager_bucket_name]
 
   kms_key_refs = [
-    "alias/${var.account}/${var.shregion}/ebs",
+    "alias/${var.account}/${var.region}/ebs",
     local.ssm_kms_key_id,
     local.account_ssm_key_arn
   ]
