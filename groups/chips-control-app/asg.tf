@@ -123,7 +123,7 @@ module "asg_alarms" {
   actions_alarm = var.enable_sns_topic ? [module.cloudwatch_sns_email[0].sns_topic_arn, module.cloudwatch_sns_ooh[0].sns_topic_arn] : []
   actions_ok    = var.enable_sns_topic ? [module.cloudwatch_sns_email[0].sns_topic_arn, module.cloudwatch_sns_ooh[0].sns_topic_arn] : []
 
-
+  tags = local.default_tags
   depends_on = [
     module.cloudwatch_sns_email,
     module.asg
