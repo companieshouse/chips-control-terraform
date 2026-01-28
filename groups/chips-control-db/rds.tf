@@ -70,6 +70,7 @@ module "rds" {
   password = local.rds_data[each.key]["admin-password"]
   port     = 1521
 
+  manage_master_user_password = false
   deletion_protection     = true
   maintenance_window      = lookup(each.value, "rds_maintenance_window", "Mon:00:00-Mon:03:00")
   backup_window           = lookup(each.value, "rds_backup_window", "03:00-06:00")
