@@ -20,7 +20,6 @@ enable_instance_refresh = true
 
 # Custom config bucket for development
 config_bucket_name = "heritage-development.eu-west-2.configs.ch.gov.uk"
-# the above should be ported to a vault entry dvop-3543
 
 # Allow access from Concourse workers
 allow_concourse_access = true
