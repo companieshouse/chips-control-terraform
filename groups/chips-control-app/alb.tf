@@ -49,6 +49,7 @@ module "internal_alb" {
   load_balancer_type         = "application"
   enable_deletion_protection = true
   idle_timeout               = 120
+  create_security_group      = false
 
   security_groups = [module.internal_alb_security_group.security_group_id]
   subnets         = data.aws_subnets.application.ids
