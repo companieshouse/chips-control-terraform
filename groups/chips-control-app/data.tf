@@ -78,6 +78,7 @@ data "vault_generic_secret" "security_s3_buckets" {
   path = "aws-accounts/security/s3"
 }
 
+
 data "vault_generic_secret" "nfs_mounts" {
   path = "applications/${var.aws_account}-${var.aws_region}/${var.application_type}/app/nfs_mounts"
 }
@@ -111,7 +112,7 @@ data "template_file" "userdata" {
   }
 }
 
-data "template_cloudinit_config" "userdata_config" {
+data "cloudinit_config" "userdata_config" {
   gzip          = true
   base64_encode = true
 

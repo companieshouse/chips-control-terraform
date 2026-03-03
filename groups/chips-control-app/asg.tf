@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "asg_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "5.3.1"
+  version = "~> 5.0"
 
   name        = "sgr-${var.application}-asg-001"
   description = "Security group for the ${var.application} asg"
@@ -77,7 +77,7 @@ module "asg" {
   ]
 
   iam_instance_profile = module.instance_profile.aws_iam_instance_profile.name
-  user_data_base64     = data.template_cloudinit_config.userdata_config.rendered
+  user_data_base64     = data.cloudinit_config.userdata_config.rendered
 
   tags_as_map = merge(
     local.default_tags,

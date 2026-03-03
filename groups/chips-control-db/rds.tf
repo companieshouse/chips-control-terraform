@@ -5,7 +5,7 @@ module "rds_security_group" {
   for_each = var.rds_databases
 
   source  = "terraform-aws-modules/security-group/aws"
-  version = "5.3.1"
+  version = "~> 5.0"
 
   name        = "sgr-${each.key}-rds-001"
   description = format("Security group for the ${each.key} RDS database")
