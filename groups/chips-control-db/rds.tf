@@ -50,20 +50,23 @@ module "rds" {
   create_db_parameter_group = true
   create_db_subnet_group    = true
 
-  character_set_name         = lookup(each.value, "character_set_name", "AL32UTF8")
-  identifier                 = join("-", ["rds", each.key, var.environment, "001"])
-  engine                     = lookup(each.value, "engine", "oracle-se2")
-  major_engine_version       = lookup(each.value, "major_engine_version", "19")
-  engine_version             = lookup(each.value, "engine_version", "19")
-  auto_minor_version_upgrade = lookup(each.value, "auto_minor_version_upgrade", false)
-  license_model              = lookup(each.value, "license_model", "license-included")
-  instance_class             = lookup(each.value, "instance_class", "db.t3.micro")
-  allocated_storage          = lookup(each.value, "allocated_storage", 10)
-  storage_type               = lookup(each.value, "storage_type", null)
-  iops                       = lookup(each.value, "iops", null)
-  multi_az                   = lookup(each.value, "multi_az", false)
-  storage_encrypted          = true
-  kms_key_id                 = data.aws_kms_key.rds.arn
+  character_set_name          = lookup(each.value, "character_set_name", "AL32UTF8")
+  identifier                  = join("-", ["rds", each.key, var.environment, "001"])
+  engine                      = lookup(each.value, "engine", "oracle-se2")
+  major_engine_version        = lookup(each.value, "major_engine_version", "19")
+  engine_version              = lookup(each.value, "engine_version", "19")
+  auto_minor_version_upgrade  = lookup(each.value, "auto_minor_version_upgrade", false)
+  license_model               = lookup(each.value, "license_model", "license-included")
+  instance_class              = lookup(each.value, "instance_class", "db.t3.micro")
+  allocated_storage           = lookup(each.value, "allocated_storage", 10)
+  storage_type                = lookup(each.value, "storage_type", null)
+  iops                        = lookup(each.value, "iops", null)
+  multi_az                    = lookup(each.value, "multi_az", false)
+  storage_encrypted           = true
+  kms_key_id                  = data.aws_kms_key.rds.arn
+  option_group_description    = "Option group for ${join("-", ["rds", each.key, var.environment, "001"])}"
+  parameter_group_description = "Database parameter group for ${join("-", ["rds", each.key, var.environment, "001"])}"
+  db_subnet_group_description = "Database subnet group for ${join("-", ["rds", each.key, var.environment, "001"])}"
 
   db_name  = upper(each.key)
   username = local.rds_data[each.key]["admin-username"]
@@ -71,11 +74,11 @@ module "rds" {
   port     = 1521
 
   manage_master_user_password = false
-  deletion_protection     = true
-  maintenance_window      = lookup(each.value, "rds_maintenance_window", "Mon:00:00-Mon:03:00")
-  backup_window           = lookup(each.value, "rds_backup_window", "03:00-06:00")
-  backup_retention_period = lookup(each.value, "backup_retention_period", 7)
-  skip_final_snapshot     = false
+  deletion_protection         = true
+  maintenance_window          = lookup(each.value, "rds_maintenance_window", "Mon:00:00-Mon:03:00")
+  backup_window               = lookup(each.value, "rds_backup_window", "03:00-06:00")
+  backup_retention_period     = lookup(each.value, "backup_retention_period", 7)
+  skip_final_snapshot         = false
 
   # Enhanced Monitoring
   monitoring_interval             = 30
@@ -131,6 +134,7 @@ module "rds" {
     local.default_tags,
     {
       ServiceTeam = format("%s-DBA-Support", upper(each.key))
+      Name        = join("-", ["rds", each.key, var.environment, "001"])
     }
   )
 }

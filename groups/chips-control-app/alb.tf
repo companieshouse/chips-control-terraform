@@ -13,7 +13,7 @@ module "internal_alb_security_group" {
 
   ingress_rules = ["http-80-tcp", "https-443-tcp"]
   egress_rules  = ["all-all"]
-  tags = local.default_tags
+  tags          = local.default_tags
 }
 
 resource "aws_security_group_rule" "ch_development_concourse" {
@@ -131,7 +131,7 @@ module "internal_alb" {
       tags = merge(
         local.default_tags,
         {
-        InstanceTargetGroupTag = var.application
+          InstanceTargetGroupTag = var.application
         }
       )
     }]
