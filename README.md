@@ -7,6 +7,7 @@ Infrastructure code to support CHIPS RunDeck service
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0, < 2.0.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0.0, < 6.0.0 |
+| <a name="requirement_cloudinit"></a> [cloudinit](#requirement\_cloudinit) | >= 2.0, < 3.0 |
 | <a name="requirement_vault"></a> [vault](#requirement\_vault) | >= 4.0, < 5.0 |
 
 ## Providers
@@ -14,6 +15,7 @@ Infrastructure code to support CHIPS RunDeck service
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.0.0, < 6.0.0 |
+| <a name="provider_cloudinit"></a> [cloudinit](#provider\_cloudinit) | >= 2.0, < 3.0 |
 | <a name="provider_template"></a> [template](#provider\_template) | n/a |
 | <a name="provider_vault"></a> [vault](#provider\_vault) | >= 4.0, < 5.0 |
 
@@ -23,15 +25,15 @@ Infrastructure code to support CHIPS RunDeck service
 |------|--------|---------|
 | <a name="module_asg"></a> [asg](#module\_asg) | git@github.com:companieshouse/terraform-modules//aws/autoscaling-with-launch-template | tags/1.0.356 |
 | <a name="module_asg_alarms"></a> [asg\_alarms](#module\_asg\_alarms) | git@github.com:companieshouse/terraform-modules//aws/asg-cloudwatch-alarms | tags/1.0.356 |
-| <a name="module_asg_security_group"></a> [asg\_security\_group](#module\_asg\_security\_group) | terraform-aws-modules/security-group/aws | 5.0 |
+| <a name="module_asg_security_group"></a> [asg\_security\_group](#module\_asg\_security\_group) | terraform-aws-modules/security-group/aws | ~> 5.0 |
 | <a name="module_cloudwatch_sns_email"></a> [cloudwatch\_sns\_email](#module\_cloudwatch\_sns\_email) | terraform-aws-modules/sns/aws | 6.2.1 |
 | <a name="module_cloudwatch_sns_ooh"></a> [cloudwatch\_sns\_ooh](#module\_cloudwatch\_sns\_ooh) | terraform-aws-modules/sns/aws | 6.2.1 |
 | <a name="module_instance_profile"></a> [instance\_profile](#module\_instance\_profile) | git@github.com:companieshouse/terraform-modules//aws/instance_profile | tags/1.0.356 |
 | <a name="module_internal_alb"></a> [internal\_alb](#module\_internal\_alb) | terraform-aws-modules/alb/aws | 8.7.0 |
-| <a name="module_internal_alb_security_group"></a> [internal\_alb\_security\_group](#module\_internal\_alb\_security\_group) | terraform-aws-modules/security-group/aws | 5.0 |
+| <a name="module_internal_alb_security_group"></a> [internal\_alb\_security\_group](#module\_internal\_alb\_security\_group) | terraform-aws-modules/security-group/aws | ~> 5.0 |
 | <a name="module_rds"></a> [rds](#module\_rds) | terraform-aws-modules/rds/aws | 6.13.1 |
 | <a name="module_rds_cloudwatch_alarms"></a> [rds\_cloudwatch\_alarms](#module\_rds\_cloudwatch\_alarms) | git@github.com:companieshouse/terraform-modules//aws/oracledb_cloudwatch_alarms | tags/1.0.195 |
-| <a name="module_rds_security_group"></a> [rds\_security\_group](#module\_rds\_security\_group) | terraform-aws-modules/security-group/aws | 5.0 |
+| <a name="module_rds_security_group"></a> [rds\_security\_group](#module\_rds\_security\_group) | terraform-aws-modules/security-group/aws | ~> 5.0 |
 | <a name="module_rds_start_stop_schedule"></a> [rds\_start\_stop\_schedule](#module\_rds\_start\_stop\_schedule) | git@github.com:companieshouse/terraform-modules//aws/rds_start_stop_schedule | tags/1.0.354 |
 
 ## Resources
@@ -43,9 +45,9 @@ Infrastructure code to support CHIPS RunDeck service
 | [aws_key_pair.keypair](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair) | resource |
 | [aws_route53_record.app](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.rds](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
+| [aws_security_group_rule.ch_development_concourse](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.admin_oracle_db](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.admin_oracle_em](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
-| [aws_security_group_rule.ch_development_concourse](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.heritage_development_https](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.http_from_alb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_acm_certificate.acm_cert](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/acm_certificate) | data source |
@@ -59,12 +61,12 @@ Infrastructure code to support CHIPS RunDeck service
 | [aws_kms_key.sns_key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/kms_key) | data source |
 | [aws_route53_zone.private_zone](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
 | [aws_security_group.https_access_groups](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/security_group) | data source |
-| [aws_security_groups.https_access_group_ids](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/security_groups) | data source |
 | [aws_security_group.rds_ingress](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/security_group) | data source |
 | [aws_security_group.rds_shared](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/security_group) | data source |
+| [aws_security_groups.https_access_group_ids](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/security_groups) | data source |
 | [aws_subnets.application](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/subnets) | data source |
 | [aws_vpc.vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
-| [cloudinit_config.userdata_config](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config) | data source |
+| [cloudinit_config.userdata_config](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
 | [template_file.userdata](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
 | [vault_generic_secret.account_ids](https://registry.terraform.io/providers/hashicorp/vault/latest/docs/data-sources/generic_secret) | data source |
 | [vault_generic_secret.ch_development_concourse_cidrs](https://registry.terraform.io/providers/hashicorp/vault/latest/docs/data-sources/generic_secret) | data source |
@@ -109,12 +111,13 @@ Infrastructure code to support CHIPS RunDeck service
 | <a name="input_instance_swap_volume_size"></a> [instance\_swap\_volume\_size](#input\_instance\_swap\_volume\_size) | Size of swap volume attached to instances | `number` | `5` | no |
 | <a name="input_nfs_mount_destination_parent_dir"></a> [nfs\_mount\_destination\_parent\_dir](#input\_nfs\_mount\_destination\_parent\_dir) | The parent folder that all NFS shares should be mounted inside on the EC2 instance | `string` | `"/mnt"` | no |
 | <a name="input_parameter_group_settings"></a> [parameter\_group\_settings](#input\_parameter\_group\_settings) | A map whose keys represent RDS instances and whose values are a list of parameters that will be set in the RDS instance parameter group | `map(list(any))` | n/a | yes |
+| <a name="input_region"></a> [region](#input\_region) | Short version of the name of the AWS region in which resources will be administered | `string` | n/a | yes |
 | <a name="input_rds_cloudwatch_alarms"></a> [rds\_cloudwatch\_alarms](#input\_rds\_cloudwatch\_alarms) | A map whose keys represent RDS instances and whose values define RDS CloudWatch Alarms configuration | `map(map(any))` | n/a | yes |
 | <a name="input_rds_databases"></a> [rds\_databases](#input\_rds\_databases) | ------------------------------------------------------------------------------ RDS Variables ------------------------------------------------------------------------------ | `map(any)` | n/a | yes |
 | <a name="input_rds_ingress_groups"></a> [rds\_ingress\_groups](#input\_rds\_ingress\_groups) | A map whose keys represent RDS instances and whose values are lists of strings representing security group filter patterns | `map(list(string))` | n/a | yes |
 | <a name="input_rds_start_stop_schedule"></a> [rds\_start\_stop\_schedule](#input\_rds\_start\_stop\_schedule) | A map whose keys represent RDS instances and whose values define configuration for RDS start/stop schedules | `map(map(any))` | n/a | yes |
-| <a name="input_region"></a> [region](#input\_region) | Short version of the name of the AWS region in which resources will be administered | `string` | n/a | yes |
 
 ## Outputs
 
 No outputs.
+<!-- END_TF_DOCS -->
