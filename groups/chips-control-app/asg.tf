@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 module "asg_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 5.0"
+  version = "5.3.1"
 
   name        = "sgr-${var.application}-asg-001"
   description = "Security group for the ${var.application} asg"
@@ -13,6 +13,7 @@ module "asg_security_group" {
   ingress_rules           = ["ssh-tcp"]
 
   egress_rules = ["all-all"]
+  tags         = merge(local.default_tags, { Name = "sgr-${var.application}-asg-001" })
 }
 
 resource "aws_security_group_rule" "http_from_alb" {
@@ -94,6 +95,8 @@ resource "aws_cloudwatch_log_group" "log_groups" {
   name              = each.value["log_group_name"]
   retention_in_days = lookup(each.value, "log_group_retention", var.default_log_group_retention_in_days)
   kms_key_id        = lookup(each.value, "kms_key_id", local.logs_kms_key_id)
+
+  tags = merge(local.default_tags, { Name = each.value["log_group_name"] })
 }
 
 #--------------------------------------------

@@ -5,7 +5,7 @@ module "rds_security_group" {
   for_each = var.rds_databases
 
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 5.0"
+  version = "5.3.1"
 
   name        = "sgr-${each.key}-rds-001"
   description = format("Security group for the ${each.key} RDS database")
@@ -14,6 +14,7 @@ module "rds_security_group" {
   ingress_with_source_security_group_id = local.rds_ingress_from_services[each.key]
 
   egress_rules = ["all-all"]
+  tags         = merge(local.default_tags, { Name = "sgr-${each.key}-rds-001" })
 }
 resource "aws_security_group_rule" "admin_oracle_db" {
   for_each = var.rds_databases
