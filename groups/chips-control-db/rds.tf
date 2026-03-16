@@ -159,10 +159,7 @@ module "rds_cloudwatch_alarms" {
 
 
   db_instance_id = module.rds[each.key].db_instance_identifier
-  #   module.rds[each.key].this_db_instance_id,
-  #   module.rds[each.key].db_instance_id,
-  #   module.rds[each.key].id
-  # )
+
   db_instance_shortname = upper(each.key)
   alarm_actions_enabled = lookup(each.value, "alarm_actions_enabled")
   alarm_name_prefix     = "Oracle RDS"
