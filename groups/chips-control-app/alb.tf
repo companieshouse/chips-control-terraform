@@ -1,18 +1,19 @@
 module "internal_alb_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 4.3"
+  version = "5.3.1"
 
   name        = "sgr-${var.application}-internal-alb-001"
   description = "Security group for the ${var.application} servers"
   vpc_id      = data.aws_vpc.vpc.id
 
-  ingress_prefix_list_ids  = var.allow_concourse_access ? [
+  ingress_prefix_list_ids = var.allow_concourse_access ? [
     data.aws_ec2_managed_prefix_list.administration.id,
     data.aws_ec2_managed_prefix_list.shared-services-management.id
   ] : [data.aws_ec2_managed_prefix_list.administration.id]
-  
-  ingress_rules       = ["http-80-tcp", "https-443-tcp"]
-  egress_rules        = ["all-all"]
+
+  ingress_rules = ["http-80-tcp", "https-443-tcp"]
+  egress_rules  = ["all-all"]
+  tags          = local.default_tags
 }
 
 resource "aws_security_group_rule" "ch_development_concourse" {
@@ -40,7 +41,7 @@ resource "aws_security_group_rule" "heritage_development_https" {
 
 module "internal_alb" {
   source  = "terraform-aws-modules/alb/aws"
-  version = "~> 6.5"
+  version = "6.7.0"
 
   name                       = "alb-${var.application}-int-01"
   vpc_id                     = data.aws_vpc.vpc.id
@@ -50,7 +51,9 @@ module "internal_alb" {
   idle_timeout               = 120
 
   security_groups = [module.internal_alb_security_group.security_group_id]
-  subnets         = data.aws_subnet_ids.application.ids
+  subnets         = data.aws_subnets.application.ids
+
+  tags = merge(local.default_tags, { Name = "alb-${var.application}-int-01" })
 
   access_logs = {
     bucket  = local.elb_access_logs_bucket_name
@@ -74,9 +77,9 @@ module "internal_alb" {
 
   https_listeners = [
     {
-      port               = 443
-      protocol           = "HTTPS"
-      certificate_arn    = data.aws_acm_certificate.acm_cert.arn
+      port            = 443
+      protocol        = "HTTPS"
+      certificate_arn = data.aws_acm_certificate.acm_cert.arn
       default_action = {
         type         = "fixed-response"
         status_code  = "503"
@@ -126,9 +129,12 @@ module "internal_alb" {
         type    = "lb_cookie"
       }
 
-      tags = {
-        InstanceTargetGroupTag = var.application
-      }
+      tags = merge(
+        local.default_tags,
+        {
+          InstanceTargetGroupTag = var.application
+        }
+      )
     }]
   )
 }

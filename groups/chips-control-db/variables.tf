@@ -1,17 +1,4 @@
 # ------------------------------------------------------------------------------
-# Vault Variables
-# ------------------------------------------------------------------------------
-variable "vault_username" {
-  type        = string
-  description = "Username for connecting to Vault - usually supplied through TF_VARS"
-}
-
-variable "vault_password" {
-  type        = string
-  description = "Password for connecting to Vault - usually supplied through TF_VARS"
-}
-
-# ------------------------------------------------------------------------------
 # AWS Variables
 # ------------------------------------------------------------------------------
 variable "aws_region" {
@@ -55,7 +42,7 @@ variable "environment" {
 # RDS Variables
 # ------------------------------------------------------------------------------
 variable "rds_databases" {
-  type = map
+  type = map(any)
 }
 
 variable "rds_ingress_groups" {

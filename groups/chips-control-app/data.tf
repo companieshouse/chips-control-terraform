@@ -6,8 +6,13 @@ data "aws_vpc" "vpc" {
   }
 }
 
-data "aws_subnet_ids" "application" {
-  vpc_id = data.aws_vpc.vpc.id
+data "aws_subnets" "application" {
+
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.vpc.id]
+  }
+
   filter {
     name   = "tag:Name"
     values = ["sub-application-*"]
@@ -45,7 +50,7 @@ data "aws_route53_zone" "private_zone" {
 }
 
 data "aws_acm_certificate" "acm_cert" {
-  domain = var.domain_name
+  domain      = var.domain_name
   most_recent = true
 }
 
@@ -73,6 +78,7 @@ data "vault_generic_secret" "security_s3_buckets" {
   path = "aws-accounts/security/s3"
 }
 
+
 data "vault_generic_secret" "nfs_mounts" {
   path = "applications/${var.aws_account}-${var.aws_region}/${var.application_type}/app/nfs_mounts"
 }
@@ -99,14 +105,14 @@ data "aws_ami" "ami" {
 data "template_file" "userdata" {
   template = file("${path.module}/templates/user_data.tpl")
   vars = {
-    ANSIBLE_INPUTS             = jsonencode(local.userdata_ansible_inputs)
-    DNS_DOMAIN                 = local.internal_fqdn
-    DNS_ZONE_ID                = data.aws_route53_zone.private_zone.zone_id
-    HERITAGE_ENVIRONMENT       = title(var.environment)
+    ANSIBLE_INPUTS       = jsonencode(local.userdata_ansible_inputs)
+    DNS_DOMAIN           = local.internal_fqdn
+    DNS_ZONE_ID          = data.aws_route53_zone.private_zone.zone_id
+    HERITAGE_ENVIRONMENT = title(var.environment)
   }
 }
 
-data "template_cloudinit_config" "userdata_config" {
+data "cloudinit_config" "userdata_config" {
   gzip          = true
   base64_encode = true
 

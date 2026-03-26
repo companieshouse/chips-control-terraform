@@ -5,7 +5,9 @@ aws_account = "heritage-development"
 
 # Account shorthand
 account = "hdev"
-region  = "euw2"
+
+# Region shorthand for KMS
+region = "euw2"
 
 # Application details
 application = "chips-control"

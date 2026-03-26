@@ -3,16 +3,17 @@
 # ------------------------------------------------------------------------------
 module "asg_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 4.3"
+  version = "5.3.1"
 
   name        = "sgr-${var.application}-asg-001"
   description = "Security group for the ${var.application} asg"
   vpc_id      = data.aws_vpc.vpc.id
 
-  ingress_prefix_list_ids  = [data.aws_ec2_managed_prefix_list.administration.id]
-  ingress_rules       = ["ssh-tcp"]
+  ingress_prefix_list_ids = [data.aws_ec2_managed_prefix_list.administration.id]
+  ingress_rules           = ["ssh-tcp"]
 
   egress_rules = ["all-all"]
+  tags         = merge(local.default_tags, { Name = "sgr-${var.application}-asg-001" })
 }
 
 resource "aws_security_group_rule" "http_from_alb" {
@@ -27,7 +28,7 @@ resource "aws_security_group_rule" "http_from_alb" {
 
 # ASG Module
 module "asg" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/autoscaling-with-launch-template?ref=tags/1.0.244"
+  source = "git@github.com:companieshouse/terraform-modules//aws/autoscaling-with-launch-template?ref=tags/1.0.356"
 
   count = var.asg_count
 
@@ -54,10 +55,10 @@ module "asg" {
       volume_size = var.instance_swap_volume_size
     }
   ]
-  
+
   # Auto scaling group
   asg_name                       = format("%s%s-asg", var.application, count.index)
-  vpc_zone_identifier            = data.aws_subnet_ids.application.ids
+  vpc_zone_identifier            = data.aws_subnets.application.ids
   health_check_type              = "EC2"
   min_size                       = var.asg_min_size
   max_size                       = var.asg_max_size
@@ -75,9 +76,9 @@ module "asg" {
   target_group_arns = [
     module.internal_alb.target_group_arns[0]
   ]
-  
+
   iam_instance_profile = module.instance_profile.aws_iam_instance_profile.name
-  user_data_base64     = data.template_cloudinit_config.userdata_config.rendered
+  user_data_base64     = data.cloudinit_config.userdata_config.rendered
 
   tags_as_map = merge(
     local.default_tags,
@@ -94,13 +95,15 @@ resource "aws_cloudwatch_log_group" "log_groups" {
   name              = each.value["log_group_name"]
   retention_in_days = lookup(each.value, "log_group_retention", var.default_log_group_retention_in_days)
   kms_key_id        = lookup(each.value, "kms_key_id", local.logs_kms_key_id)
+
+  tags = merge(local.default_tags, { Name = each.value["log_group_name"] })
 }
 
 #--------------------------------------------
 # ASG CloudWatch Alarms
 #--------------------------------------------
 module "asg_alarms" {
-  source = "git@github.com:companieshouse/terraform-modules//aws/asg-cloudwatch-alarms?ref=tags/1.0.116"
+  source = "git@github.com:companieshouse/terraform-modules//aws/asg-cloudwatch-alarms?ref=tags/1.0.356"
 
   count = var.asg_count
 
@@ -123,7 +126,7 @@ module "asg_alarms" {
   actions_alarm = var.enable_sns_topic ? [module.cloudwatch_sns_email[0].sns_topic_arn, module.cloudwatch_sns_ooh[0].sns_topic_arn] : []
   actions_ok    = var.enable_sns_topic ? [module.cloudwatch_sns_email[0].sns_topic_arn, module.cloudwatch_sns_ooh[0].sns_topic_arn] : []
 
-
+  tags = local.default_tags
   depends_on = [
     module.cloudwatch_sns_email,
     module.asg

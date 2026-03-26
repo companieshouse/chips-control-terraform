@@ -1,6 +1,5 @@
 module "cloudwatch_sns_email" {
-  count = var.enable_sns_topic ? 1 : 0
-
+  count   = var.enable_sns_topic ? 1 : 0
   source  = "terraform-aws-modules/sns/aws"
   version = "3.3.0"
 
@@ -10,9 +9,9 @@ module "cloudwatch_sns_email" {
 
   tags = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-CSI-Support"
-    )
+    {
+      ServiceTeam = "${upper(var.application)}-CSI-Support"
+    }
   )
 }
 
@@ -28,8 +27,8 @@ module "cloudwatch_sns_ooh" {
 
   tags = merge(
     local.default_tags,
-    map(
-      "ServiceTeam", "${upper(var.application)}-CSI-Support"
-    )
+    {
+      ServiceTeam = "${upper(var.application)}-CSI-Support"
+    }
   )
 }

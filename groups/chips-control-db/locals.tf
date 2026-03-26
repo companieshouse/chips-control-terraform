@@ -1,10 +1,10 @@
 locals {
   rds_data = {
-    rundeck   = data.vault_generic_secret.rundeck_rds.data
+    rundeck = data.vault_generic_secret.rundeck_rds.data
   }
 
   rds_ingress_from_services = {
-   "rundeck" = flatten([
+    "rundeck" = flatten([
       for sg_data in data.aws_security_group.rds_ingress : {
         from_port                = 1521
         to_port                  = 1521
