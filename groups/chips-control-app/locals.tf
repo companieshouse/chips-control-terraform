@@ -40,8 +40,9 @@ locals {
     ApplicationType = upper(var.application_type)
     Region          = var.aws_region
     Account         = var.aws_account
-    Repository      = "chips-devtest-terraform"
+    Repository      = "chips-control-terraform"
     Service         = "CHIPS"
+    ServiceTeam     = "CSI"
   }
 
   userdata_ansible_inputs = {
